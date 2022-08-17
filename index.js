@@ -33,14 +33,11 @@ document.addEventListener("DOMContentLoaded", function() {
             list.innerHTML = ''
             data.forEach(show=>{
               if (show.title.toLowerCase().includes(input.value.toLowerCase())){
-               // list.innerHTML = ''
               const li = document.createElement('li')
               list.appendChild(li) 
               li.innerHTML = show.title;
               li.onclick = () => {
-        
-                const queuedPanel = document.querySelector('#queued')
-               
+                 const queuedPanel = document.querySelector('#queued')
                 const li = document.createElement('li')
                 li.onclick = removeItem
                 li.innerHTML = show.title
@@ -48,9 +45,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         
               }
               }
-              // else {
-              //   // console.log('click')
-              //   location.reload()}
+             
             })
 
          }
