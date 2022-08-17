@@ -1,83 +1,60 @@
 // code here
 
-const baseUrl = 'http://localhost:3000'
-
-const listUl = () => document.getElementById("list")
-const queuedUl = () => document.getElementById("queued")
-const searchInput = () => document.getElementById("search");
-const searchBtn = () => document.getElementById("search-button");
-
-let shows = []
-let queued = []
-
-const loadShows = () => {
-  fetch(baseUrl + '/shows')
-    .then(resp => resp.json())
-    .then(data => {
-      shows = data;
-      renderShows(data)
-    })
-}
-
-const renderShows = data => {
-  resetList();
-
-  data.forEach(show => renderShow(show));
-}
-
-const renderQueued = () => {
-  resetQueued();
-  queued.forEach(show => queueShow(show))
-}
-
-const queueShow = show => {
-  const li = document.createElement("li");
-
-  li.textContent = show;
-
-  li.addEventListener("click", removeFromQueue);
-
-  queuedUl().appendChild(li);
-}
-
-const renderShow = show => {
-  const li = document.createElement('li');
-
-  li.textContent = show.title;
-
-  li.addEventListener('click', addToQueue);
-
-  listUl().appendChild(li);
-}
-
-const addToQueue = e => {
-  queued.push(e.target.innerText);
-  renderQueued();
-}
-
-const removeFromQueue = e => {
-  queued = queued.filter(show => show !== e.target.textContent);
+document.addEventListener("DOMContentLoaded", function() {
+  const showsUrl = "http://localhost:3000/shows"
   
-  renderQueued();
-}
+    fetch(showsUrl)
+  .then(function(response){ return response.json() })
+  .then(function(data){
+      const list = document.querySelector('#list')
+      data.forEach(show=>{
+      const li = document.createElement('li')
+      list.appendChild(li) 
+      li.innerHTML = show.title
+        li.onclick = () => {
+        
+          const queuedPanel = document.querySelector('#queued')
+         
+          const li = document.createElement('li')
+          li.onclick = removeItem
+          li.innerHTML = show.title
+          queuedPanel.appendChild(li)
+                  
+        }
+        function removeItem (e) {e.target.parentElement.removeChild(e.target) }
 
-const resetList = () => {
-  listUl().innerHTML = ''
-}
+         const searchButton = document.querySelector('#search-button')
+         const input = document.querySelector('#search')
 
-const resetQueued = () => {
-  queuedUl().innerHTML = ''
-}
+         searchButton.addEventListener( 'click' , renderSearch ) 
+         
+         function renderSearch() {
+            console.log('click')
+            list.innerHTML = ''
+            data.forEach(show=>{
+              if (show.title.toLowerCase().includes(input.value.toLowerCase())){
+               // list.innerHTML = ''
+              const li = document.createElement('li')
+              list.appendChild(li) 
+              li.innerHTML = show.title;
+              li.onclick = () => {
+        
+                const queuedPanel = document.querySelector('#queued')
+               
+                const li = document.createElement('li')
+                li.onclick = removeItem
+                li.innerHTML = show.title
+                queuedPanel.appendChild(li)
+                        
+              }
+              }
+              // else {
+              //   // console.log('click')
+              //   location.reload()}
+            })
 
-const search = e => {
-  renderShows(shows.filter(show => show.title.toLowerCase().includes(searchInput().value.toLowerCase())))
-}
+         }
 
-const addClickToSearchButton = () => {
-  searchBtn().addEventListener('click', search);
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  loadShows();
-  addClickToSearchButton();
-})
+      })
+  })
+});
